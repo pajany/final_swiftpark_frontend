@@ -1,0 +1,49 @@
+<div class="container-fluid padtbtm07">
+    <nav class="navfixed navbar navbar-default navbar-expand-lg navbar-dark">
+        <div class="navbar-collapse ">
+            <ul class="navbar-nav mr-auto d-flex justify-content-between footmenu-icon">
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/home']"
+                    routerLinkActive='active'>Get A Permit</a> </li>
+                <ng-container *ngFor="let data of footerList; let i = index">
+                    <li class=" nav-item">
+                        <a style="cursor: pointer;" class="nav-link" (click)="ClickedRow(i);navigate(data.page_slug)"
+                            [class.active]="i == HighlightRow">{{data.page_title}}</a>
+                    </li>
+                </ng-container>
+                
+                <!-- <li class="nav-item"><a class="nav-link" [routerLink]="['/nemesis']"
+                    routerLinkActive='active'>Nemesis</a> </li> -->
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/file-a-dispute']"
+                        routerLinkActive='active'>File a Dispute</a> </li>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/faq']" routerLinkActive='active'>FAQs</a></li>
+                <li class="nav-item"><a class="nav-link" [routerLink]="['/contact-us']"
+                        routerLinkActive='active'>Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+</div>
+<footer class="footer-bg">
+    <div class="container-fluid px-5">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-left">
+                <ul class="foot-menu">
+                    <li><a [routerLink]="['/terms']" routerLinkActive='active'>Terms & Conditions</a></li>
+                    <li><a [routerLink]="['/privacy-policy']" routerLinkActive='active'>Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 text-center" *ngIf="globalservice.visibleFootContent"><a [routerLink]="['/home']"><img
+                        src="../../assets/image/foot-logo.png" class="img-fluid" /></a></div>
+            <div class="col-md-4 text-center" *ngIf="!globalservice.visibleFootContent"> <a
+                    class="foot-contact"><span></span>1-877-943-8727</a></div>
+            <div class="col-md-4 text-right">
+                <p>© {{year}} SwiftPark. All Rights Reserved</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate-multiple"
+    [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>

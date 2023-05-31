@@ -1,0 +1,291 @@
+<section class="inner-bg payment-bg">
+    <div class="container">
+        <div class="row m-hgt align-items-center justify-content-between">
+            <div class="col-md-6 col-sm-6 col-12">
+                <h3>Payment</h3>
+            </div>
+            <div class="col-md-6 col-sm-6 col-12">
+                <ul>
+                    <li><a [routerLink]="['/home']">Home </a></li>
+                    <li><a>Payment</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="w-bg padtbtm">
+    <div class="container">
+        <div *ngIf="custommgs !==' ' " class="alert alert-danger">
+            {{custommgs}}
+         </div>
+        
+        <div class="row justify-content-end">
+             
+            
+            <div class="col-sm-6">
+               
+                <h3 class="lt-txt">Lot No {{lotNumber}} is at {{ address }}</h3>
+            </div>
+            <div class="col-sm-4 text-right">
+
+                <!-- <a class="g-btn" [routerLink]="['/view-transaction']"> View Transactions </a> -->
+                <a class="g-btn" data-toggle="modal" data-target="#viewtransactionModal">View Transactions</a>
+                <a class="g-btn" [routerLink]="['/change-pin',this.lotNumber]"> Change Pin </a>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-custom">
+                <thead>
+                    <tr>
+                        <th scope="col">Type</th>
+                        <th scope="col">Amount ($)</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Select</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of tableData; let i = index ">
+                        <td>{{item.name}}</td>
+                        <td>{{item.amt}}</td>
+                        <td>{{item.description}}</td>
+                        <td>
+                            <input type="radio" id="test{{i}}" name="radio-group"
+                                (change)="onCheckboxChange($event,item,item.quantity)">
+                            <label for="test{{i}}"></label>
+                        </td>
+                        <td *ngIf="item.duration !== 30">
+
+                            <div class="form-check-inline">
+                                <span *ngIf="item.selected" class="minus" (click)="minus(item)"></span>
+                                <span *ngIf="!item.selected" class="minus" style="cursor: default;"></span>
+                            </div>
+                            <div class="form-check-inline">
+                                <input type="number" class="form-control2" min="0" max="10000000"
+                                    [(ngModel)]="item.quantity" [disabled]="!item.selected"
+                                    (ngModelChange)="amountCalculation(item)" (keydown)="handleKeydown($event)">
+                            </div>
+                            <div class="form-check-inline">
+                                <span *ngIf="item.selected" class="plus" (click)="plus(item)"></span>
+                                <span *ngIf="!item.selected" class="plus" style="cursor: default;"></span>
+                            </div>
+
+                        </td>
+                        <td *ngIf="item.duration === 30">
+                        </td>
+                    </tr>
+
+
+                </tbody>
+            </table>
+        </div>
+
+        <div class="payment-frm">
+            <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Permit Expires</label>
+                            <!-- <input *ngIf="totalAmount === 0" type="text" class="form-control" disabled> -->
+                            <!-- <input *ngIf="totalAmount !== 0" [ngModel]="expiryDate | date:'medium'"
+                                (ngModelChange)="expiryDate=$event" name="expiryDate" type="text" class="form-control"
+                                disabled> -->
+                                <input  [ngModel]="expiryDate | date:'medium'"
+                                (ngModelChange)="expiryDate=$event" name="expiryDate" type="text" class="form-control"
+                                disabled>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Amount ($) - (CAD) </label>
+                            <input [ngModel]="amount | currency" (ngModelChange)="amount=$event" name="amount"
+                                type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Tax: ({{taxAmount}} %)</label>
+                            <input [ngModel]="percentage | currency" (ngModelChange)="percentage=$event" name="taxAmount"
+                                type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Total ($) - (CAD)</label>
+                            <input [ngModel]="totalAmount | currency" (ngModelChange)="totalAmount=$event"
+                                name="totalAmount" type="text" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-control" type="text" name="email" [(ngModel)]="model.email"
+                                #email="ngModel" [ngClass]="{ 'is-invalid': f.submitted && email.invalid }" required />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Phone</label>
+                            <input class="form-control" type="text" name="phone" [(ngModel)]="model.phone"
+                                #phone="ngModel" [ngClass]="{ 'is-invalid': f.submitted && phone.invalid }" required />
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Vehicle License</label>
+                            <input class="form-control" type="text" name="license" [(ngModel)]="model.license"
+                                #license="ngModel" [pattern]="alphaNumeric"  (keypress)="keyPressAlphaNumericWithCharacters($event)"
+                                [ngClass]="{ 'is-invalid': f.submitted && license.invalid }" required />
+                                <span style="color: red;"> {{ Licenseno }} </span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-12">
+                        <div class="form-group">
+                            <label>Payment Type</label>
+                            <div class="row">
+                                <div class="col mt-3">
+                                    <input type="radio" id="p1" name="radio-group" name="cardSelect"
+                                        (change)="onRadioChange(1)" checked>
+                                    <label for="p1">Courtesy Card</label>
+                                </div>
+                                <div class="col">
+                                    <input *ngIf="totalAmount !== 0" type="radio" id="p2" name="radio-group" name="cardSelect"
+                                        (change)="onRadioChange(2)">
+                                    <label *ngIf="totalAmount !== 0" for="p2">Credit Card / Debit Card</label>
+                                </div>
+                                <!-- <div class="col">
+                                    <input type="radio" id="p3" name="radio-group" name="cardSelect"
+                                        (change)="onRadioChange(3)">
+                                    <label for="p3">Debit Card</label>
+                                </div> -->
+                            </div>
+                            <br>
+                            <br>
+                            <div *ngIf="iscourtesycard" class="row">
+                                <div class="col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>SwiftPark Card Number</label>
+                                        <input class="form-control" type="text" name="cardnumber"
+                                            [(ngModel)]="model.courtesyCard" #courtesyCard="ngModel"
+                                            [ngClass]="{ 'is-invalid': f.submitted && courtesyCard.invalid }"
+                                            required />
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <label>PIN</label>
+                                        <input class="form-control" type="text" name="pin" [(ngModel)]="model.pin"
+                                            #pin="ngModel" [ngClass]="{ 'is-invalid': f.submitted && pin.invalid }"
+                                            required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div *ngIf="!iscourtesycard" class="form-group">
+                                <label>Card Number</label>
+                                <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions">
+                                </ngx-stripe-card>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6 col-12 text-center">
+                        <button [disabled]="totalAmount === 0" class="btn btn-primary">Submit</button>
+                        <button id="openModalButton" [hidden]="true" data-toggle="modal"
+                            data-target="#exampleModal">Open
+                            Modal</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- <div class="modal" [class.show]="show" id="exampleModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-confirm">
+            <div class="modal-content">
+                <div class="modal-header justify-content-center">
+                    <i class="fa fa-times-circle fa-3x material-icons" style="font-size: 100px;"></i>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body text-center">
+                    <p>{{message}}</p>
+                    <button class="btn btn-success" data-dismiss="modal"><span>Close</span>
+                        <i class="fa fa-arrow-right fa-3x pl-1">
+                        </i></button>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><img
+                        src="../../../assets/image/close.png" class="img-fluid" />
+                </button>
+                <div class="modal-body">
+                    <div class="thank-msg text-center">
+
+                        <img  src="../../../assets/image/pin-error.png" class="img-fluid" />
+                        <!-- <img  src="../../../assets/image/thnk-icon.png" class="img-fluid" /> -->
+                        <!-- <p class="mt20">{{message}}</p> -->
+                        <h3 class="mt20">{{message}}</h3>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="viewtransactionModal" tabindex="-1" aria-labelledby="viewtransactionModalLabel"
+        role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">View Transactions</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form name="viewtransForm" (ngSubmit)="transactionSubmit()" #f="ngForm" novalidate>
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input class="form-control" type="text" name="transactionemail"
+                                [(ngModel)]="model.transactionemail" #transactionemail="ngModel"
+                                [ngClass]="{ 'is-invalid': f.submitted && transactionemail.invalid }" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate-multiple"
+    [fullScreen]="true">
+    <p style="color: white"> Loading... </p>
+</ngx-spinner>

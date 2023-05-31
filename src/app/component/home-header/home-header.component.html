@@ -1,0 +1,73 @@
+<section class="home-bannerbg">
+  <nav class="navbar header-part navbar-expand-md">
+    <a class="navbar-brand" [routerLink]="['/home']"><img src="../../../assets/image/home-logo.png"
+        class="img-fluid" /></a>
+    <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+      aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="navbar-collapse collapse ml-50" id="navbarCollapse">
+      <ul class="navbar-nav align-items-center justify-content-between">
+        <li class="nav-item"><a class="nav-link" [routerLink]="['/home']"
+          routerLinkActive='active'>Get A Permit</a> </li>
+        <ng-container *ngFor="let data of hearderList; let i = index">
+          <li class=" nav-item">
+            <a style="cursor: pointer;" class="nav-link" (click)="ClickedRow(i);navigate(data.page_slug)"
+              [class.active]="i == HighlightRow">{{data.page_title}}</a>
+          </li>
+        </ng-container>
+        <!-- <li class="nav-item"><a class="nav-link" [routerLink]="['/nemesis']" routerLinkActive='active'>Nemesis</a> </li> -->
+      </ul>
+      <a class="foot-contact nav-link posabs"><span></span>1-877-943-8727</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <div class="home-pge-cnt">
+          <h3 class="ban-hd">Speed-up and simplify your parking collection with instant paperless parking payment
+            management. Provide convenient-to-use parking payment for your customers.</h3>
+          <div class="btn-div">
+
+            <input type="number" min="0" max="100000" placeholder="Enter your five digit lot number"
+              (keydown)="handleKeydown($event)" (keyup.enter)="lotNumberValidation()" [(ngModel)]="lotNumber"
+              class="frm-cntrl" [ngClass]="{ 'invalid': submitted}" />
+            <a style="cursor: pointer;" [attr.disabled]="lotNumber ? true : null" (click)="lotNumberValidation()"
+              class="go-btn">GO</a>
+            <button id="openModalButton" [hidden]="true" data-toggle="modal" data-target="#exampleModal">Open
+              Modal</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><img
+                    src="../../../assets/image/close.png" class="img-fluid" />
+            </button>
+            <div class="modal-body">
+                <div class="thank-msg text-center">
+
+                    <img  src="../../../assets/image/pin-error.png" class="img-fluid" />
+                    <!-- <img  src="../../../assets/image/thnk-icon.png" class="img-fluid" /> -->
+                    <!-- <p class="mt20">{{message}}</p> -->
+                    <h3 class="mt20">{{message}}</h3>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<ngx-spinner bdColor="rgba(0, 0, 0, 0.8)" size="medium" color="#fff" type="ball-clip-rotate-multiple"
+  [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>
